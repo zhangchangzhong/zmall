@@ -1,8 +1,10 @@
 package com.macro.mall.portal.domain;
 
+import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +52,22 @@ public class CommonResult {
         result.put("total", pageInfo.getTotalElements());
         result.put("pageNum", pageInfo.getNumber());
         result.put("list", pageInfo.getContent());
+        this.code = SUCCESS;
+        this.message = "操作成功";
+        this.data = result;
+        return this;
+    }
+    /**
+     * 返回分页成功数据
+     */
+    public CommonResult pageSuccess(List data) {
+        PageInfo pageInfo = new PageInfo(data);
+        Map<String, Object> result = new HashMap<>();
+        result.put("pageSize", pageInfo.getPageSize());
+        result.put("totalPage", pageInfo.getPages());
+        result.put("total", pageInfo.getTotal());
+        result.put("pageNum", pageInfo.getPageNum());
+        result.put("list", pageInfo.getList());
         this.code = SUCCESS;
         this.message = "操作成功";
         this.data = result;

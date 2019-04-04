@@ -1,7 +1,9 @@
 package com.macro.mall.portal.dao;
 
+import com.macro.mall.model.OmsOrder;
 import com.macro.mall.model.OmsOrderItem;
 import com.macro.mall.portal.domain.OmsOrderDetail;
+import com.macro.mall.portal.dto.OmsOrderQueryParam;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -37,4 +39,8 @@ public interface PortalOrderDao {
      */
     int releaseSkuStockLock(@Param("itemList") List<OmsOrderItem> orderItemList);
 
+    /**
+     * 条件查询订单
+     */
+    List<OmsOrder> getList(@Param("memberId") Long memberId, @Param("queryParam") OmsOrderQueryParam queryParam);
 }
