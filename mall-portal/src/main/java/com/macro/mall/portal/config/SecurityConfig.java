@@ -5,9 +5,11 @@ import com.macro.mall.portal.component.*;
 import com.macro.mall.portal.domain.MemberDetails;
 import com.macro.mall.portal.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /**
  * SpringSecurity的配置
@@ -64,7 +67,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/sso/login")
-                .successHandler(new GoAuthenticationSuccessHandler())
+                .successForwardUrl("/sso/login")
+//                .successHandler(new GoAuthenticationSuccessHandler())
                 .failureHandler(new GoAuthenticationFailureHandler())
                 .and()
                 .logout()
@@ -82,6 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .rememberMe()
 //                .tokenValiditySeconds(1800)
 //                .key("token_key")
+                .and()
+                .cors()
                 .and()
                 .csrf()
                 .disable();//开启basic认证登录后可以调用需要认证的接口
@@ -101,16 +107,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                UmsMember member = memberService.getByUsername(username);
-                if(member!=null){
-                    return new MemberDetails(member);
-                }
-                throw new UsernameNotFoundException("用户名或密码错误");
+         return    username -> {
+            UmsMember member = memberService.getByUsername(username);
+            if(member!=null){
+                return new MemberDetails(member);
             }
+            throw new UsernameNotFoundException("用户名或密码错误");
         };
+//        return new UserDetailsService() {
+//            @Override
+//            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//                UmsMember member = memberService.getByUsername(username);
+//                if(member!=null){
+//                    return new MemberDetails(member);
+//                }
+//                throw new UsernameNotFoundException("用户名或密码错误");
+//            }
+//        };
     }
     @Bean
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
@@ -120,12 +133,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //配置那些域可以访问的我的资源
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("*");
+        config.setAllowCredentials(true);
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(0);
         return source;
     }
+
 }

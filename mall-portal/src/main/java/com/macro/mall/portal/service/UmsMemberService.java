@@ -4,6 +4,8 @@ import com.macro.mall.model.UmsMember;
 import com.macro.mall.portal.domain.CommonResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 /**
  * 会员管理Service
  * Created by macro on 2018/8/3.
@@ -45,4 +47,10 @@ public interface UmsMemberService {
      * 根据会员id修改会员积分
      */
     void updateIntegration(Long id,Integer integration);
+
+    /**
+     * 登录功能
+     * @return 生成的JWT的token
+     */
+    Map<String, Object> login();
 }

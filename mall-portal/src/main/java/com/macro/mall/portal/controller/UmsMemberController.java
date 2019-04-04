@@ -1,14 +1,17 @@
 package com.macro.mall.portal.controller;
 
+import com.macro.mall.model.UmsMember;
+import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.service.UmsMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 会员登录注册管理Controller
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UmsMemberController {
     @Autowired
     private UmsMemberService memberService;
+
 
     @ApiOperation("注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -45,5 +49,15 @@ public class UmsMemberController {
                                  @RequestParam String password,
                                  @RequestParam String authCode) {
         return memberService.updatePassword(telephone,password,authCode);
+    }
+
+
+    @ApiOperation(value = "登录以后返回token")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ResponseBody
+    public Object login() {
+        // 123456       $2a$10$c1D2EWCZCKfiir48x1MVvuWxOu9coqyKhxQSK1tyyi4GUGQcmV3j.
+        Map<String, Object> userAndTokenMap = memberService.login();
+        return new CommonResult().success(userAndTokenMap);
     }
 }
