@@ -2,6 +2,7 @@ package com.macro.mall.portal.controller;
 
 import com.macro.mall.model.UmsMember;
 import com.macro.mall.portal.domain.CommonResult;
+import com.macro.mall.portal.dto.UmsPortalLoginParam;
 import com.macro.mall.portal.service.UmsMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,12 +53,22 @@ public class UmsMemberController {
     }
 
 
+//    @ApiOperation(value = "登录以后返回token")
+//    @RequestMapping(value = "/login", method = RequestMethod.POST)
+//    @ResponseBody
+//    public Object login() {
+//        // 123456       $2a$10$c1D2EWCZCKfiir48x1MVvuWxOu9coqyKhxQSK1tyyi4GUGQcmV3j.
+//        Map<String, Object> userAndTokenMap = memberService.login();
+//        return new CommonResult().success(userAndTokenMap);
+//    }
     @ApiOperation(value = "登录以后返回token")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public Object login() {
-        // 123456       $2a$10$c1D2EWCZCKfiir48x1MVvuWxOu9coqyKhxQSK1tyyi4GUGQcmV3j.
-        Map<String, Object> userAndTokenMap = memberService.login();
+    public Object login(@RequestBody UmsPortalLoginParam umsPortalLoginParam) {
+        Map<String, Object> userAndTokenMap= memberService.login(umsPortalLoginParam.getUsername(), umsPortalLoginParam.getPassword());
+        if (userAndTokenMap.get("token") == null) {
+            return new CommonResult().failed("用户名或密码错误");
+        }
         return new CommonResult().success(userAndTokenMap);
     }
 }

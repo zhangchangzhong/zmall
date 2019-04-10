@@ -42,5 +42,5 @@ public interface PortalOrderDao {
     /**
      * 条件查询订单
      */
-    List<OmsOrder> getList(@Param("memberId") Long memberId, @Param("queryParam") OmsOrderQueryParam queryParam);
+    List<OmsOrderDetail> getList(@Param("memberId") Long memberId, @Param("queryParam") OmsOrderQueryParam queryParam);
 }

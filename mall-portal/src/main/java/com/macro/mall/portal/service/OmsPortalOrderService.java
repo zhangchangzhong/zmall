@@ -3,6 +3,7 @@ package com.macro.mall.portal.service;
 import com.macro.mall.model.OmsOrder;
 import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.domain.ConfirmOrderResult;
+import com.macro.mall.portal.domain.OmsOrderDetail;
 import com.macro.mall.portal.domain.OrderParam;
 import com.macro.mall.portal.dto.OmsOrderQueryParam;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,5 +51,5 @@ public interface OmsPortalOrderService {
     /**
      * 订单查询
      */
-    List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum);
+    List<OmsOrderDetail> list(OmsOrderQueryParam queryParam);
 }

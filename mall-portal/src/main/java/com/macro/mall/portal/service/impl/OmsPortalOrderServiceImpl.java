@@ -639,9 +639,9 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         return calcAmount;
     }
     @Override
-    public List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
-        PageHelper.startPage(pageNum, pageSize);
+    public List<OmsOrderDetail> list(OmsOrderQueryParam queryParam) {
         UmsMember currentMember  =  memberService.getCurrentMember();
-        return portalOrderDao.getList(currentMember.getId(),queryParam);
+        List<OmsOrderDetail> omsOrderDetailList = portalOrderDao.getList(currentMember.getId(),queryParam);
+        return omsOrderDetailList;
     }
 }

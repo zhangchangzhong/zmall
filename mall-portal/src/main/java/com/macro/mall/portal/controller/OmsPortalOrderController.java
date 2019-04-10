@@ -3,6 +3,7 @@ package com.macro.mall.portal.controller;
 import com.macro.mall.model.OmsOrder;
 import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.domain.ConfirmOrderResult;
+import com.macro.mall.portal.domain.OmsOrderDetail;
 import com.macro.mall.portal.domain.OrderParam;
 import com.macro.mall.portal.dto.OmsOrderQueryParam;
 import com.macro.mall.portal.service.OmsPortalOrderService;
@@ -62,10 +63,8 @@ public class OmsPortalOrderController {
     @ApiOperation("获取用户的订单列表")
     @RequestMapping(value = "/getUserOrderList",method = RequestMethod.POST)
     @ResponseBody
-    public Object getUserOrderList(OmsOrderQueryParam queryParam,
-                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                   @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<OmsOrder> orderList = portalOrderService.list(queryParam, pageSize, pageNum);
+    public Object getUserOrderList(@RequestBody OmsOrderQueryParam queryParam) {
+        List<OmsOrderDetail> orderList = portalOrderService.list(queryParam);
         return new CommonResult().pageSuccess(orderList);
     }
 }

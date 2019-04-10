@@ -53,4 +53,6 @@ public interface UmsMemberService {
      * @return 生成的JWT的token
      */
     Map<String, Object> login();
+
+    Map<String, Object>  login(String username,String password);
 }

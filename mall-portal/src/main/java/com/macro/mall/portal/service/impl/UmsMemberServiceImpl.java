@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -49,6 +50,8 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     private String REDIS_KEY_PREFIX_AUTH_CODE;
     @Value("${redis.key.expire.authCode}")
     private Long AUTH_CODE_EXPIRE_SECONDS;
+    @Autowired
+    private UserDetailsService userDetailsService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Value("${jwt.tokenHeader}")
@@ -170,6 +173,28 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             tokenMap.put("tokenHead", tokenHead);
             tokenMap.put("token", token);
             tokenMap.put("userInfo", memberDetails);
+        } catch (AuthenticationException e) {
+            LOGGER.warn("登录异常:{}", e.getMessage());
+        }
+        return tokenMap;
+    }
+
+    @Override
+    public  Map<String, Object>  login(String username,String password) {
+        Map<String, Object> tokenMap = new LinkedHashMap<>();
+        String token = "";
+        //密码需要客户端加密后传递
+        try {
+            MemberDetails memberDetails =  (MemberDetails)userDetailsService.loadUserByUsername(username);
+            if(!passwordEncoder.matches(password,memberDetails.getPassword())){
+                throw new BadCredentialsException("密码不正确");
+            }
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            token = jwtTokenUtil.generateToken(memberDetails);
+            tokenMap.put("tokenHead", tokenHead);
+            tokenMap.put("token", token);
+            tokenMap.put("userInfo", memberDetails.getUmsMember());
         } catch (AuthenticationException e) {
             LOGGER.warn("登录异常:{}", e.getMessage());
         }

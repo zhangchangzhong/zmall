@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @MapperScan({"com.macro.mall.mapper","com.macro.mall.portal.dao"})
-@EnableScheduling
+//@EnableScheduling
 public class MallPortalApplication {
 
     public static void main(String[] args) {
