@@ -17,6 +17,26 @@
         <collection property="productFullReductionList" columnPrefix="full_" resultMap="com.macro.mall.mapper.PmsProductFullReductionMapper.BaseResultMap">
         </collection>
     </resultMap>
+    <resultMap id="productDetailMap" type="com.macro.mall.portal.domain.PmsPortalProductDetail" autoMapping="true">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <collection property="productAttributeList" columnPrefix="attr_" resultMap="com.macro.mall.mapper.PmsProductAttributeMapper.BaseResultMap">
+        </collection>
+        <collection property="productAttributeValueList" columnPrefix="attribute_" resultMap="com.macro.mall.mapper.PmsProductAttributeValueMapper.BaseResultMap">
+        </collection>
+        <collection property="skuStockList" columnPrefix="sku_" resultMap="com.macro.mall.mapper.PmsSkuStockMapper.BaseResultMap">
+        </collection>
+    </resultMap>
+    <select id="getProductDetail" resultMap="productDetailMap">
+        SELECT *,
+            pa.id attr_id,pa.`name` attr_name,pa.type attr_type,pa.input_type attr_input_type,pa.input_list attr_input_list,pa.select_type attr_select_type,
+            s.id sku_id,s.product_id sku_product_id,s.price sku_price,s.low_stock sku_low_stock,s.pic sku_pic,s.sale sku_sale,s.sku_code sku_sku_code,s.sp1 sku_sp1,s.sp2 sku_sp2,s.sp3 sku_sp3,s.stock sku_stock,
+            a.id attribute_id,a.product_id attribute_product_id,a.product_attribute_id attribute_product_attribute_id,a.value attribute_value,a.value attribute_value
+        FROM pms_product p
+        LEFT JOIN pms_product_attribute pa ON p.product_attribute_category_id = pa.product_attribute_category_id
+        LEFT JOIN pms_sku_stock s ON s.product_id = p.id
+        LEFT JOIN pms_product_attribute_value a ON a.product_id=p.id
+        WHERE p.id=#{id};
+    </select>
     <select id="getCartProduct" resultMap="cartProductMap">
         SELECT
             p.id id,
