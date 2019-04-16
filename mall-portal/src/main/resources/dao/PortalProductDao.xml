@@ -17,7 +17,7 @@
         <collection property="productFullReductionList" columnPrefix="full_" resultMap="com.macro.mall.mapper.PmsProductFullReductionMapper.BaseResultMap">
         </collection>
     </resultMap>
-    <resultMap id="productDetailMap" type="com.macro.mall.portal.domain.PmsPortalProductDetail" autoMapping="true">
+    <resultMap id="productDetailMap" type="com.macro.mall.portal.domain.PmsPortalProductDetail"  extends="com.macro.mall.mapper.PmsProductMapper.ResultMapWithBLOBs">
         <id column="id" jdbcType="BIGINT" property="id" />
         <collection property="productAttributeList" columnPrefix="attr_" resultMap="com.macro.mall.mapper.PmsProductAttributeMapper.BaseResultMap">
         </collection>
